@@ -1,0 +1,34 @@
+{
+  "files": {
+    "main.css": "/list-milosny/static/css/main.feb62e85.css",
+    "main.js": "/list-milosny/static/js/main.c1a89729.js",
+    "static/js/453.2ca527c3.chunk.js": "/list-milosny/static/js/453.2ca527c3.chunk.js",
+    "static/media/baron.png": "/list-milosny/static/media/baron.7985383a6d3c912ea86c.png",
+    "static/media/blazen.png": "/list-milosny/static/media/blazen.347e80a47bedf5adccf9.png",
+    "static/media/hrabia.png": "/list-milosny/static/media/hrabia.171b9daad75d70f1c16d.png",
+    "static/media/ksiezniczka.png": "/list-milosny/static/media/ksiezniczka.e3791159598347da2516.png",
+    "static/media/pochlebca.png": "/list-milosny/static/media/pochlebca.65d1e3ee780323a94ade.png",
+    "static/media/kanclerz.png": "/list-milosny/static/media/kanclerz.d24288adf06094e5f072.png",
+    "static/media/krol.png": "/list-milosny/static/media/krol.6949187f0a0c5600492e.png",
+    "static/media/krolowa_matka.png": "/list-milosny/static/media/krolowa_matka.6b96a66dbb77ce87abe3.png",
+    "static/media/baronowa.png": "/list-milosny/static/media/baronowa.72769a54a8e6649b4471.png",
+    "static/media/kardynal.png": "/list-milosny/static/media/kardynal.8114f98e6cc541e40199.png",
+    "static/media/hrabina.png": "/list-milosny/static/media/hrabina.359430b16ef2c0b1ab51.png",
+    "static/media/ksiaze.png": "/list-milosny/static/media/ksiaze.cc543b10e6cc02573399.png",
+    "static/media/biskup.png": "/list-milosny/static/media/biskup.c280ef37bb9a319ecc6c.png",
+    "static/media/strazniczka.png": "/list-milosny/static/media/strazniczka.a4a8dca4c2d58e897f20.png",
+    "static/media/pokojowka.png": "/list-milosny/static/media/pokojowka.91658e472ae0070dd631.png",
+    "static/media/ksiadz.png": "/list-milosny/static/media/ksiadz.1acbc4413b821f4d5aef.png",
+    "static/media/skrytobojca.png": "/list-milosny/static/media/skrytobojca.e6be5b8455ea53c7f1d4.png",
+    "static/media/szpieg.png": "/list-milosny/static/media/szpieg.b459d39ca83ebb1a7926.png",
+    "static/media/konstabl.png": "/list-milosny/static/media/konstabl.5f4a1323078f0eac7520.png",
+    "index.html": "/list-milosny/index.html",
+    "main.feb62e85.css.map": "/list-milosny/static/css/main.feb62e85.css.map",
+    "main.c1a89729.js.map": "/list-milosny/static/js/main.c1a89729.js.map",
+    "453.2ca527c3.chunk.js.map": "/list-milosny/static/js/453.2ca527c3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.feb62e85.css",
+    "static/js/main.c1a89729.js"
+  ]
+}
