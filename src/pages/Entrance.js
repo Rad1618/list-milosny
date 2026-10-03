@@ -1,0 +1,18 @@
+import { useState } from 'react';
+import '../App.css';
+
+export default function EntrancePage({setRoom})
+{
+  const [userName, setUserName] = useState("");
+  const [roomName, setRoomName] = useState("");
+
+  return (
+    <div className="entrancePage">
+      <div>Imię</div>
+      <textarea className="entranceTextArea" onChange={(e) => setUserName(e.target.value)}></textarea>
+      <div>Pokój</div>
+      <textarea className="entranceTextArea" onChange={(e) => setRoomName(e.target.value)}></textarea>
+      <button className="entranceButton" onClick={() => setRoom(roomName, userName)}>Wejdź</button>
+    </div>
+  );
+}

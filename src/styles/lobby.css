@@ -1,0 +1,45 @@
+.lobbyTitle {
+    width: 100%;
+    margin-top: 8px;
+    font-weight: 600;
+    font-size: large;
+    text-align: center;
+}
+
+.lobbyTop {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    padding: 10px 0px;
+}
+
+.lobbyButtonStart {
+    height: 40px;
+    width: 120px;
+    background-color: #bab9c5;
+    border: solid 1px #9392a1;
+    color: #000;
+    cursor: pointer;
+}
+
+.lobbyButtonStart:disabled {
+    cursor: not-allowed;
+    background-color: #a6a6a6;
+    border: solid 1px #9392a1;
+    color: #585858;
+}
+
+.lobbySelect__control {
+    height: 40px;
+    width: 240px;
+}
+
+.lobbyGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    width: 100wv;
+    height: 100%;
+    gap: 8px;
+    padding: 8px 24px;
+}
