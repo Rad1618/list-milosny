@@ -16,16 +16,18 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
   const [possibleTargets, setPossibleTargets] = useState([]);
   const [numberOfTargets, setNumberOfTargets] = useState(0);
   const [targets, setTargets] = useState([]);
+  const [showNextRoundButton, setShowNextRoundButton] = useState(false);
 
   const [openSelectNumber, setOpenSelectNumber] = useState(false);
 
   useEffect(() => {
     const myId = gameState.seats.findIndex(s => s.id === me.id);
-    if (myTurn && myId >= 0 && gameState.turn === myId && !gameState?.endRound && !gameState?.newRound)
+    if (myTurn && myId >= 0 && gameState.turn === myId)
       return;
     setState({...gameState, newRound: false});
     if (mySeat < 0)
       setMySeat(myId);
+    setState({...gameState});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState])
 
@@ -38,7 +40,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
   }, [cheatsheetPage, options])
 
   useEffect(() => {
-    if (mySeat < 0 || myTurn)
+    if (mySeat < 0 || myTurn || state.turn < 0)
       return;
     if (state.seats[state.turn].id === me.id)
     {
@@ -47,12 +49,12 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       const seats = [...state.seats];
       seats[mySeat].cards.push(state.deck[0]);
       seats[mySeat].protected = false;
-      const newState = {...state, deck: state.deck.slice(1), seats: seats};
+      const newState = {...state, deck: state.deck.slice(1), seats: seats, nextRound: false};
       setState(newState);
       setGameState(newState);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.turn, mySeat, state?.newRound])
+  }, [state.turn, mySeat])
 
   function showEvent(event)
   {
@@ -309,7 +311,8 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     setPossibleTargets([]);
     setNumberOfTargets(0);
     setTargets([]);
-    return {...state, endRound: true, winners: winners, seats: seats, events: events};
+    setShowNextRoundButton(true);
+    return {...state, endRound: true, winners: winners, seats: seats, events: events, turn: -1};
   }
 
   function findPossibleTargets(card, state)
@@ -576,7 +579,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       deck.splice(0, 1);
       return newSeat;
     })
-    const newState = {version: state.version, seats: seats, events: state.events, deck: deck, extraCard: extraCard, newRound: true};
+    const newState = {version: state.version, seats: seats, events: state.events, deck: deck, extraCard: extraCard};
     if (state?.winners.length > 0)
       newState.turn = state.seats.findIndex(s => s.id === state.winners[0]);
     else
@@ -593,8 +596,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       newState.deck = deck;
     }
 
-    setMyTurn(false);
-    setState(newState);
+    // setState(newState);
     setGameState(newState);
   }
 
@@ -634,9 +636,9 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
         className='gameSpecialButton'
         onClick={() => selectTarget(-2)}
       >Tylko 1</button>}
-      {state?.endRound && <button
+      {showNextRoundButton && <button
         className='gameSpecialButton'
-        onClick={() => nextRound()}
+        onClick={() => {nextRound(); setShowNextRoundButton(false);}}
       >Następna runda</button>}
     </div>
     <div className='gameLowerHalf'>

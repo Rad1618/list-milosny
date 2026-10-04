@@ -37,7 +37,7 @@ export default function Lobby({gameState, setGameState, members, options, setOpt
       if (members[i].dev)
         continue;
       unshufledSeats.push({id: members[i].id, cards: [deck[0]], discard: []});
-      // unshufledSeats.push({id: members[i].id, cards: ["Strażniczka"], discard: []});
+      // unshufledSeats.push({id: members[i].id, cards: ["Księżniczka"], discard: []});
       deck.splice(0, 1);
     }
     for (let i = 0; i < PLACEHOLDERS; i++)

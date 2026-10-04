@@ -25,7 +25,7 @@ export default function Seat({seat, members, hisTurn, canBeTargetted, isTargette
     <h3>{player}{hisTurn && !endRound && <PlayingCards size={26} className="gameIcon"/>}</h3>
     <div key="key" className="gameSeatSymbols">
       <Fragment key="points">
-        {seat?.points && [...Array(seat.points)].map(n => <Trophy key={n} className="gameIcon gold"/>)}
+        {seat?.points > 0 && [...Array(seat.points)].map(n => <Trophy key={n} className="gameIcon gold"/>)}
       </Fragment>
       {seat?.protected && <Shield key="shield" className="gameIcon"/>}
       {pochlebca && pochlebca === seat.id && <Crosshair key="target" className="gameIcon red"/>}
