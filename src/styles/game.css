@@ -10,11 +10,12 @@
     display: grid;
     grid-template-columns: 180px auto;
     width: 100%;
-    min-height: 230px;
+    height: 100%;
 }
 
 .gameDeckContainer {
     position: relative;
+    min-height: 230px;
 }
 
 .gameDeckCard {
@@ -147,7 +148,7 @@
     border-radius: 5px;
     background-color: #e9e9e1;
     margin: 4px;
-    max-height: 320px;
+    max-height: 360px;
 }
 
 .gameCheatsheet ul {

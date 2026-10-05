@@ -1,8 +1,18 @@
+import { useMemo } from 'react';
+
 import '../styles/modals.css';
 
-export default function SelectNumberModal({open, setOpen, biskup, onSelect})
+export default function SelectNumberModal({open, setOpen, biskup, onSelect, options})
 {
-  const NUMBERS = biskup ? [0, 1, 2, 3, 4, 5, 6, 7, 8] : [0, 2, 3, 4, 5, 6, 7, 8, 9];
+  const NUMBERS = useMemo(() => {
+    if (biskup)
+      return [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    if (options.mode.value === "base")
+      return [2, 3, 4, 5, 6, 7, 8];
+    if (options.mode.value === "base+")
+      return [0, 2, 3, 4, 5, 6, 7, 8];
+    return [0, 2, 3, 4, 5, 6, 7, 8, 9];
+  }, [options]);
 
   if (!open)
     return null;
@@ -13,12 +23,6 @@ export default function SelectNumberModal({open, setOpen, biskup, onSelect})
       <div className='modalNumbersGrid'>
         {NUMBERS.map(n => <div key={n} onClick={() => {onSelect(n); setOpen(false);}}>{n}</div>)}
       </div>
-      {/* <div>Wyrzucenie {targetSeat.username} z obozu</div>
-      <div>Czy jeteś za?</div>
-      <div className="modalButtons">
-        <button className="modalButtonYes" onClick={(e) => castVote(e, true)}>Tak</button>
-        <button className="modalButtonNo" onClick={(e) => castVote(e, false)}>Nie</button>
-      </div> */}
     </div>
   </div>
 }

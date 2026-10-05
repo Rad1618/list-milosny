@@ -183,8 +183,9 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     {
       if (state.seats.filter((seat, idx) => possibleTargets.includes(idx) && seat.id === state.pochlebca).length === 0)
       {
-        events.push({text: `Cel Pochlebcy niekompatybilny.`, target: "all"});
-        pochlebcaFlag = true;
+        possibleTargets.push(state.seats.findIndex(seat => seat.id === state.pochlebca));
+        // events.push({text: `Cel Pochlebcy niekompatybilny.`, target: "all"});
+        // pochlebcaFlag = true;
       }
     }
     if (possibleTargets.length === 0 || (myTurnPhase === "Kardynał" && possibleTargets.length < 2))
@@ -369,6 +370,8 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
           [seats, events] = eliminate(newTargets[0], seats, events);
         else
           events.push({"text": "Nikt nie odpada.", "target": "all"});
+        if (seats.filter(s => !s?.eliminated).length <= 1)
+          endTurnFlag = true;
       }
       else if (myTurnPhase === "Król")
       {
@@ -513,10 +516,13 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
         {
           events.push({text: `Gracz ${targetName} miał kartę Skrytobójca.`, target: "all"});
           [seats, events] = eliminate(mySeat, seats, events);
-          events.push({text: `Gracz ${targetName} odrzuca kartę Skrytobójca.`, target: "all"});
-          seats[targets[0]].discard.push(seats[targets[0]].cards[0]);
-          seats[targets[0]].cards.splice(0, 1);
-          if (seats[targets[0]].cards.length === 0)
+          if (!seats[targets[0]]?.eliminated)
+          {
+            events.push({text: `Gracz ${targetName} odrzuca kartę Skrytobójca.`, target: "all"});
+            seats[targets[0]].discard.push(seats[targets[0]].cards[0]);
+            seats[targets[0]].cards.splice(0, 1);
+          }
+          if (seats[targets[0]].cards.length === 0 && !seats[targets[0]]?.eliminated)
           {
             if (deck.length > 0)
             {
@@ -687,6 +693,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       setOpen={setOpenSelectNumber}
       biskup={myTurnPhase==="Biskup"}
       onSelect={(n) => selectNumber(n)}
+      options={options}
     />
   </div>
 }
