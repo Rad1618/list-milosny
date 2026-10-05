@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/list-milosny/static/css/main.feb62e85.css",
-    "main.js": "/list-milosny/static/js/main.9c6c413c.js",
+    "main.css": "/list-milosny/static/css/main.9b9120f8.css",
+    "main.js": "/list-milosny/static/js/main.d05f5a72.js",
     "static/js/453.2ca527c3.chunk.js": "/list-milosny/static/js/453.2ca527c3.chunk.js",
     "static/media/baron.png": "/list-milosny/static/media/baron.7985383a6d3c912ea86c.png",
     "static/media/blazen.png": "/list-milosny/static/media/blazen.347e80a47bedf5adccf9.png",
@@ -23,12 +23,12 @@
     "static/media/szpieg.png": "/list-milosny/static/media/szpieg.b459d39ca83ebb1a7926.png",
     "static/media/konstabl.png": "/list-milosny/static/media/konstabl.5f4a1323078f0eac7520.png",
     "index.html": "/list-milosny/index.html",
-    "main.feb62e85.css.map": "/list-milosny/static/css/main.feb62e85.css.map",
-    "main.9c6c413c.js.map": "/list-milosny/static/js/main.9c6c413c.js.map",
+    "main.9b9120f8.css.map": "/list-milosny/static/css/main.9b9120f8.css.map",
+    "main.d05f5a72.js.map": "/list-milosny/static/js/main.d05f5a72.js.map",
     "453.2ca527c3.chunk.js.map": "/list-milosny/static/js/453.2ca527c3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.feb62e85.css",
-    "static/js/main.9c6c413c.js"
+    "static/css/main.9b9120f8.css",
+    "static/js/main.d05f5a72.js"
   ]
 }
