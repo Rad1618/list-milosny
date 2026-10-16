@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  min-width: 1200px;
 }
 
 .App-logo {
@@ -54,13 +55,12 @@
 }
 
 .entrancePage {
-  position: absolute;
-  margin: 30vh 30vw 30vh 30vw;
-  background-color: #babae0;
+  margin: 30vh 30% 30vh 30%;
+  padding: 10px;
+  background-color: hsl(240, 38%, 80%);
   border: solid 1px #000;
-  width: 40vw;
-  height: 40vh;
   display: flex;
+  gap: 4px;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;

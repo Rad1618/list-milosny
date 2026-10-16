@@ -576,7 +576,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       return newSeat;
     })
     const newState = {...gameState, seats: seats, events: gameState.events, deck: deck, extraCard: extraCard};
-    if (gameState?.winners.length > 0)
+    if ((gameState?.winners ?? []).length > 0)
       newState.turn = gameState.seats.findIndex(s => s.id === gameState.winners[0]);
     else
       newState.turn = 0;
