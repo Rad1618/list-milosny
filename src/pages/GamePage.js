@@ -3,13 +3,12 @@ import Seat from '../components/Seat';
 import GameCard from '../components/Card';
 import { CARDS, SETS } from '../data/cardsData'
 import SelectNumberModal from '../modals/SelectNumberModal';
-import { IterationCw } from 'lucide-react';
+import { IterationCw, TriangleAlert } from 'lucide-react';
 import '../styles/game.css'
 
 export default function GamePage({gameState, setGameState, options, setOptions, members, me})
 {
   const [cheatsheetPage, setCheatsheetPage] = useState(0);
-  const [state, setState] = useState(gameState);
   const [mySeat, setMySeat] = useState(-1);
   const [myTurn, setMyTurn] = useState(false);
   const [myTurnPhase, setMyTurnPhase] = useState("");
@@ -24,10 +23,24 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     const myId = gameState.seats.findIndex(s => s.id === me.id);
     if (myTurn && myId >= 0 && gameState.turn === myId)
       return;
-    setState({...gameState, newRound: false});
-    if (mySeat < 0)
+    let seat = mySeat;
+    if (seat < 0)
+    {
       setMySeat(myId);
-    setState({...gameState});
+      seat = myId;
+    }
+    if (seat < 0 || myTurn || gameState.turn < 0 || gameState.seats[seat].cards.length >= 2)
+      return;
+    if (gameState.seats[gameState.turn].id === me.id)
+    {
+      setMyTurn(true);
+      setMyTurnPhase("discard");
+      const seats = [...gameState.seats];
+      seats[seat].cards.push(gameState.deck[0]);
+      seats[seat].protected = false;
+      const newState = {...gameState, deck: gameState.deck.slice(1), seats: seats, nextRound: false, endRound: false};
+      setGameState(newState);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState])
 
@@ -38,23 +51,6 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       cards.push(keys[i]);
     return cards;
   }, [cheatsheetPage, options])
-
-  useEffect(() => {
-    if (mySeat < 0 || myTurn || state.turn < 0)
-      return;
-    if (state.seats[state.turn].id === me.id)
-    {
-      setMyTurn(true);
-      setMyTurnPhase("discard");
-      const seats = [...state.seats];
-      seats[mySeat].cards.push(state.deck[0]);
-      seats[mySeat].protected = false;
-      const newState = {...state, deck: state.deck.slice(1), seats: seats, nextRound: false};
-      setState(newState);
-      setGameState(newState);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.turn, mySeat])
 
   function showEvent(event)
   {
@@ -67,13 +63,12 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
   {
     if (mySeat < 0 || !myTurn)
       return;
-    const seats = [...state.seats];
+    const seats = [...gameState.seats];
     seats[mySeat].discard.push(card.name);
     const idx = seats[mySeat].cards.findIndex(c => c === card.name);
     if (idx >= 0)
       seats[mySeat].cards.splice(idx, 1);
-    const newState = {...state, seats: seats, events: [...state.events, {text: `Gracz ${me.username} zagrał kartę ${card.name}.`, target: "all"}]};
-    setState(newState);
+    const newState = {...gameState, seats: seats, events: [...gameState.events, {text: `Gracz ${me.username} zagrał kartę ${card.name}.`, target: "all"}]};
     setMyTurnPhase("resolve");
     activateCardEffect(card.name, newState);
   }
@@ -82,18 +77,17 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
   {
     if (mySeat < 0 || !myTurn)
       return;
-    const seats = [...state.seats];
-    const deck = [...state.deck];
+    const seats = [...gameState.seats];
+    const deck = [...gameState.deck];
     const idx = seats[mySeat].cards.findIndex(c => c === card.name);
     if (idx >= 0)
       seats[mySeat].cards.splice(idx, 1);
     deck.push(card.name);
 
-    let newState = {...state, seats: seats, deck: deck};
+    let newState = {...gameState, seats: seats, deck: deck};
     if (seats[mySeat].cards.length <= 1)
       newState = endTurn(newState);
 
-    setState(newState);
     setGameState(newState);
   }
 
@@ -171,7 +165,6 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       newState.pochlebca = null;
     if (endTurnFlag)
       newState = endTurn(newState);
-    setState(newState);
     setGameState(newState);
   }
 
@@ -279,7 +272,6 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
           return {winners: [s.id], cardValue: cardValue, discardValue: discardValue};
         return {...win, winners: [...win.winners, s.id]};
       }, {winners: [], cardValue: -1, discardValue: -1});
-      console.log(winnersData);
       winners = winnersData.winners;
     }
     for (let i = 0; i < winners.length; i++)
@@ -288,7 +280,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       events.push({text: `Rundę zwyciężył Gracz ${winnerName}`, target: "all"});
       seats.find(s => s.id === winners[i]).points = (seats.find(s => s.id === winners[i])?.points ?? 0) + 1;
     }
-    if (winners.filter(w => seats.find(s => s.id === w)?.blazen))  // Błazen target won
+    if (winners.filter(w => seats.find(s => s.id === w)?.blazen ?? false).length > 0)  // Błazen target won
     {
       const blazenIdx = seats.findIndex(s => s.discard.includes("Błazen"));
       if (blazenIdx >= 0)
@@ -307,7 +299,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     }
 
     events.push({text: "end-round", target: "all"});
-    setMyTurn(false);
+    // setMyTurn(false);
     setMyTurnPhase("");
     setPossibleTargets([]);
     setNumberOfTargets(0);
@@ -342,10 +334,10 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     if (newTargets.length === Math.min(numberOfTargets, possibleTargets.length) || idx === -2)
     {
       setPossibleTargets([]);
-      let seats = [...state.seats];
-      let events = [...state.events];
-      let deck = [...state.deck];
-      let extraCard = state.extraCard;
+      let seats = [...gameState.seats];
+      let events = [...gameState.events];
+      let deck = [...gameState.deck];
+      let extraCard = gameState.extraCard;
       let endTurnFlag = true;
       let pochlebca = null;
       
@@ -451,7 +443,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
           const bufor = [...seats[newTargets[0]].cards];
           seats[newTargets[0]].cards = [...seats[newTargets[1]].cards];
           seats[newTargets[1]].cards = bufor;
-          pochlebca = state.pochlebca; // pochlebca musi zostać jeszcze na drugi wybór
+          pochlebca = gameState.pochlebca; // pochlebca musi zostać jeszcze na drugi wybór
           setPossibleTargets(newTargets);
           setTargets([]);
           setNumberOfTargets(1);
@@ -471,21 +463,20 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
         seats[newTargets[0]].blazen = true;
       }
 
-      let newState = {...state, seats: seats, events: events, deck: deck, extraCard: extraCard};
+      let newState = {...gameState, seats: seats, events: events, deck: deck, extraCard: extraCard};
       if (endTurnFlag)
         newState = endTurn(newState);
       newState.pochlebca = pochlebca;
-      setState(newState);
       setGameState(newState);
     }
   }
 
   function selectNumber(number)
   {
-    let seats = [...state.seats];
-    let events = [...state.events];
-    let deck = [...state.deck];
-    let extraCard = state.extraCard;
+    let seats = [...gameState.seats];
+    let events = [...gameState.events];
+    let deck = [...gameState.deck];
+    let extraCard = gameState.extraCard;
     let endTurnFlag = true;
     if (myTurnPhase === "Biskup")
     {
@@ -549,10 +540,9 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       }
     }
 
-    let newState = {...state, seats: seats, events: events, deck: deck, extraCard: extraCard};
+    let newState = {...gameState, seats: seats, events: events, deck: deck, extraCard: extraCard};
     if (endTurnFlag)
       newState = endTurn(newState);
-    setState(newState);
     setGameState(newState);
   }
 
@@ -575,7 +565,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     const extraCard = deck[0];
     deck.splice(0, 1);
 
-    const seats = state.seats.map(s => {
+    const seats = gameState.seats.map(s => {
       const newSeat = ({
         id: s.id,
         cards: [deck[0]],
@@ -585,9 +575,9 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       deck.splice(0, 1);
       return newSeat;
     })
-    const newState = {version: state.version, seats: seats, events: state.events, deck: deck, extraCard: extraCard};
-    if (state?.winners.length > 0)
-      newState.turn = state.seats.findIndex(s => s.id === state.winners[0]);
+    const newState = {...gameState, seats: seats, events: gameState.events, deck: deck, extraCard: extraCard};
+    if (gameState?.winners.length > 0)
+      newState.turn = gameState.seats.findIndex(s => s.id === gameState.winners[0]);
     else
       newState.turn = 0;
 
@@ -603,6 +593,8 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     }
 
     // setState(newState);
+    setMyTurn(false);
+    console.log("Next Round", newState);
     setGameState(newState);
   }
 
@@ -612,28 +604,31 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
   return <div className='gamePage'>
     <div className='gameUpperHalf'>
       <div className='gameDeckContainer'>
-        {state.notUsedCards && <div className='gameNotUsedCards'>
+        <TriangleAlert className='gameForceRefresh'
+          onClick={() => window.confirm("Ta akcja odświerzy stan gry wszystkich graczy. Używać jedynie w sytuacji kryzysowej. Czy kontynuować?") && setGameState(gameState)}
+        />
+        {gameState.notUsedCards && <div className='gameNotUsedCards'>
             Odrzucone karty:
-            {state.notUsedCards.map((card, idx) => <div key={idx}>
+            {gameState.notUsedCards.map((card, idx) => <div key={idx}>
               {card}
             </div>)}
           </div>}
-        {state.deck.length > 2 && <div className='gameDeckCard c1'>{state.deck.length}</div>}
-        {state.deck.length > 1 && <div className='gameDeckCard c2'>{state.deck.length}</div>}
-        {state.deck.length > 0 && <div className='gameDeckCard c3'>{state.deck.length}</div>}
-        {state.extraCard && <div className='gameExtraCard'/>}
+        {gameState.deck.length > 2 && <div className='gameDeckCard c1'>{gameState.deck.length}</div>}
+        {gameState.deck.length > 1 && <div className='gameDeckCard c2'>{gameState.deck.length}</div>}
+        {gameState.deck.length > 0 && <div className='gameDeckCard c3'>{gameState.deck.length}</div>}
+        {gameState.extraCard && <div className='gameExtraCard'/>}
       </div>
       <div className='gameUpperHalfSeats'>
-        {state.seats.map((seat, idx) => <Seat
+        {gameState.seats.map((seat, idx) => <Seat
           key={seat.id} 
           seat={seat}
           members={members}
-          hisTurn={state.turn === idx}
+          hisTurn={gameState.turn === idx}
           canBeTargetted={possibleTargets.includes(idx)}
           isTargetted={targets.includes(idx)}
           onTarget={() => selectTarget(idx)}
-          pochlebca={targets.length === 0 && state.pochlebca}
-          endRound={state?.endRound ?? false}
+          pochlebca={targets.length === 0 && gameState.pochlebca}
+          endRound={gameState?.endRound ?? false}
         />)}
       </div>
     </div>
@@ -650,7 +645,7 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
     <div className='gameLowerHalf'>
       <div className='gameEvents'>
         <div className='gameEventsEnd'/>
-        {state?.events && state.events.filter(event => showEvent(event))
+        {gameState?.events && gameState.events.filter(event => showEvent(event))
         .map((event, idx) => {
           if (event.text === "end-turn")
             return (<div key={idx} className='gameEventSeparator'/>);
@@ -663,14 +658,14 @@ export default function GamePage({gameState, setGameState, options, setOptions, 
       </div>
       <div>
         {mySeat >= 0 && <div className='gameHand'>
-          {state.seats[mySeat].cards.map((c, idx) => <GameCard
+          {gameState.seats[mySeat].cards.map((c, idx) => <GameCard
             key={idx}
             card={CARDS.find(card => card.name === c)}
             onPlay={myTurnPhase === "discard" ? chooseCard : (myTurnPhase === "Kanclerz" ? returnCard : null)}
             hrabina={
-              state.seats[mySeat].cards.includes("Hrabina") &&
-              (state.seats[mySeat].cards.includes("Król") ||
-              state.seats[mySeat].cards.includes("Książę"))
+              gameState.seats[mySeat].cards.includes("Hrabina") &&
+              (gameState.seats[mySeat].cards.includes("Król") ||
+              gameState.seats[mySeat].cards.includes("Książę"))
             }
           />)}
         </div>}

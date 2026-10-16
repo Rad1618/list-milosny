@@ -54,7 +54,7 @@ export default function Lobby({gameState, setGameState, members, options, setOpt
       seats.push(unshufledSeats[seatId]);
       unshufledSeats.splice(seatId, 1);
     }
-    // deck = ["Baron", ...deck];
+    // deck = ["Baronowa", ...deck];
 
     const newState = {deck: deck, extraCard: extraCard, seats: seats, turn: 0, events: []};
     if (seats.length === 2)
